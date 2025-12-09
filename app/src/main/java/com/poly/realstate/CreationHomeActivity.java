@@ -8,21 +8,13 @@ import androidx.appcompat.widget.Toolbar;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class CreationHomeActivity extends AppCompatActivity {
 
@@ -30,10 +22,7 @@ public class CreationHomeActivity extends AppCompatActivity {
     Button btnSave, btnAddImages;
     ImageView imagePreview;
 
-    FirebaseAuth mAuth;
-    FirebaseFirestore db;
-    FirebaseStorage storage;
-
+    // Hold selected images locally (no Firebase)
     List<Uri> imageUriList = new ArrayList<>();
 
     ActivityResultLauncher<Intent> pickImageLauncher;
@@ -58,12 +47,7 @@ public class CreationHomeActivity extends AppCompatActivity {
         btnAddImages = findViewById(R.id.btnAddImages);
         imagePreview = findViewById(R.id.imagePreview);
 
-        // Firebase
-        mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
-        storage = FirebaseStorage.getInstance();
-
-        // Image Picker (Multiple)
+        // Image Picker Launcher
         pickImageLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -80,11 +64,15 @@ public class CreationHomeActivity extends AppCompatActivity {
                             imageUriList.add(result.getData().getData());
                         }
 
-                        imagePreview.setImageURI(imageUriList.get(0));
+                        // Preview first selected image
+                        if (!imageUriList.isEmpty()) {
+                            imagePreview.setImageURI(imageUriList.get(0));
+                        }
                     }
                 }
         );
 
+        // Button Pick Images
         btnAddImages.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("image/*");
@@ -92,10 +80,13 @@ public class CreationHomeActivity extends AppCompatActivity {
             pickImageLauncher.launch(intent);
         });
 
-        btnSave.setOnClickListener(v -> saveHouse());
+        // Save Button
+        btnSave.setOnClickListener(v -> saveLocally());
     }
 
-    private void saveHouse() {
+
+    // Fake save (local only)
+    private void saveLocally() {
 
         String title = edtTitle.getText().toString().trim();
         String price = edtPrice.getText().toString().trim();
@@ -103,89 +94,20 @@ public class CreationHomeActivity extends AppCompatActivity {
         String area = edtArea.getText().toString().trim();
         String description = edtDescription.getText().toString().trim();
 
-        if (title.isEmpty() || price.isEmpty() || address.isEmpty() || area.isEmpty() || description.isEmpty()) {
+        if (title.isEmpty() || price.isEmpty() || address.isEmpty() ||
+                area.isEmpty() || description.isEmpty()) {
+
             Toast.makeText(this, "Veuillez remplir tous les champs", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        String uid = mAuth.getCurrentUser().getUid();
+        Toast.makeText(this,
+                "Maison sauvegardée localement (fake) ✅\n"
+                        + "Titre: " + title + "\n"
+                        + "Images: " + imageUriList.size(),
+                Toast.LENGTH_LONG).show();
 
-        db.collection("users").document(uid).get()
-                .addOnSuccessListener(userDoc -> {
-
-                    String userName = userDoc.getString("fullName");
-                    String userEmail = userDoc.getString("email");
-                    String userPhone = userDoc.getString("phone");
-
-                    Map<String, Object> houseMap = new HashMap<>();
-                    houseMap.put("title", title);
-                    houseMap.put("price", price);
-                    houseMap.put("address", address);
-                    houseMap.put("area", area);
-                    houseMap.put("description", description);
-                    houseMap.put("userName", userName);
-                    houseMap.put("userEmail", userEmail);
-                    houseMap.put("userPhone", userPhone);
-
-                    if (imageUriList.isEmpty()) {
-                        houseMap.put("images", new ArrayList<>());
-                        saveHouseToFirestore(houseMap);
-                    } else {
-                        uploadImagesAndSave(houseMap);
-                    }
-
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Erreur utilisateur", Toast.LENGTH_SHORT).show()
-                );
-    }
-
-    private void uploadImagesAndSave(Map<String, Object> houseMap) {
-
-        List<String> imageUrls = new ArrayList<>();
-        final int total = imageUriList.size();
-        final int[] uploaded = {0};
-
-        for (Uri uri : imageUriList) {
-
-            String fileName = "house_" + System.currentTimeMillis() + ".jpg";
-            StorageReference ref = storage.getReference()
-                    .child("houses_images")
-                    .child(fileName);
-
-            ref.putFile(uri)
-                    .addOnSuccessListener(taskSnapshot ->
-                            ref.getDownloadUrl().addOnSuccessListener(downloadUri -> {
-
-                                imageUrls.add(downloadUri.toString());
-                                uploaded[0]++;
-
-                                if (uploaded[0] == total) {
-                                    houseMap.put("images", imageUrls);
-                                    saveHouseToFirestore(houseMap);
-                                }
-
-                            })
-                    )
-                    .addOnFailureListener(e ->
-                            Log.e("UPLOAD_ERROR", e.getMessage())
-                    );
-        }
-    }
-
-    private void saveHouseToFirestore(Map<String, Object> houseMap) {
-
-        db.collection("houses")
-                .add(houseMap)
-                .addOnSuccessListener(documentReference -> {
-                    Toast.makeText(this, "Maison enregistrée ✅", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(this, HomeActivity.class));
-                    finish();
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Erreur Firestore: " + e.getMessage(), Toast.LENGTH_LONG).show()
-                );
+        // Go back
+        finish();
     }
 }
-
-eghJEV  BGYEHVnsjhanjzzhb 

@@ -1,0 +1,40 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/white_bg"
+    android:layout_margin="8dp"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/imgHouse"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_home"/>
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="House Name"
+        android:textColor="#2E7D32"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/tvHousePrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="120000 DT"
+        android:textColor="#1B5E20"
+        android:layout_marginTop="4dp"/>
+
+    <TextView
+        android:id="@+id/tvHouseAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tunis"
+        android:textColor="#1B5E20"
+        android:layout_marginTop="2dp"/>
+</LinearLayout>

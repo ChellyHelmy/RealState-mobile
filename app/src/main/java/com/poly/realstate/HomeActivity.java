@@ -10,12 +10,14 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -27,16 +29,10 @@ public class HomeActivity extends AppCompatActivity {
     private Handler bannerHandler = new Handler();
     private int[] bannerImages = {R.drawable.onboarding1, R.drawable.onboarding2, R.drawable.onboarding3};
 
-    FirebaseFirestore db;
-    FirebaseAuth mAuth;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
-        db = FirebaseFirestore.getInstance();
-        mAuth = FirebaseAuth.getInstance();
 
         // Drawer & Toolbar
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -49,24 +45,11 @@ public class HomeActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // Fetch drawer header
+        // Placeholder header info
         TextView headerName = navigationView.getHeaderView(0).findViewById(R.id.header_name);
         TextView headerEmail = navigationView.getHeaderView(0).findViewById(R.id.header_email);
-
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            headerEmail.setText(currentUser.getEmail());
-
-            // Fetch full name from Firestore
-            db.collection("users").document(currentUser.getUid())
-                    .get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        if(documentSnapshot.exists()) {
-                            String fullName = documentSnapshot.getString("fullName");
-                            if(fullName != null) headerName.setText(fullName);
-                        }
-                    });
-        }
+        headerName.setText("Utilisateur");
+        headerEmail.setText("user@email.com");
 
         // Navigation drawer item click
         navigationView.setNavigationItemSelectedListener(item -> {
@@ -74,12 +57,11 @@ public class HomeActivity extends AppCompatActivity {
             if (id == R.id.nav_home) {
                 Toast.makeText(HomeActivity.this, "Home clicked", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.nav_profile) {
-                Toast.makeText(HomeActivity.this, "Profile clicked", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(HomeActivity.this, ProfileActivity.class));
             } else if (id == R.id.nav_creehome) {
                 startActivity(new Intent(HomeActivity.this, CreationHomeActivity.class));
             } else if (id == R.id.nav_signout) {
-                // Logout
-                mAuth.signOut();
+                // Logout → Go to SignInActivity
                 startActivity(new Intent(HomeActivity.this, SignInActivity.class));
                 finish();
             }
@@ -91,9 +73,103 @@ public class HomeActivity extends AppCompatActivity {
         bannerViewPager = findViewById(R.id.bannerViewPager);
         BannerAdapter bannerAdapter = new BannerAdapter(this, bannerImages);
         bannerViewPager.setAdapter(bannerAdapter);
-
-        // Auto-scroll banner
         startBannerAutoScroll();
+
+        // Houses and Best Offers RecyclerViews
+        setupHousesAndOffers();
+    }
+
+    private void setupHousesAndOffers() {
+        RecyclerView recyclerViewHouses = findViewById(R.id.recyclerViewHouses);
+        RecyclerView recyclerViewBestOffers = findViewById(R.id.recyclerViewBestOffers);
+        TextView viewAllHouses = findViewById(R.id.textViewViewAllHouses);
+
+        // Sample data
+        List<House> houses = new ArrayList<>();
+        houses.add(new House(
+                R.drawable.ic_home,
+                "Villa Green",
+                "120000 DT",
+                "Tunis",
+                "150 m²",
+                "3 rooms",
+                "A beautiful villa located in the heart of Tunis with a large garden and modern facilities."
+        ));
+
+        houses.add(new House(
+                R.drawable.ic_home,
+                "Modern House",
+                "95000 DT",
+                "Sousse",
+                "120 m²",
+                "2 rooms",
+                "A modern house in a quiet neighborhood of Sousse, perfect for small families."
+        ));
+
+        houses.add(new House(
+                R.drawable.ic_home,
+                "Luxury Home",
+                "200000 DT",
+                "Hammamet",
+                "250 m²",
+                "5 rooms",
+                "A luxurious home near the beach of Hammamet with private pool and garden."
+        ));
+
+        houses.add(new House(
+                R.drawable.ic_home,
+                "Small Apartment",
+                "50000 DT",
+                "La Marsa",
+                "80 m²",
+                "2 rooms",
+                "A cozy small apartment located in La Marsa, ideal for singles or couples."
+        ));
+
+        houses.add(new House(
+                R.drawable.ic_home,
+                "Studio Flat",
+                "35000 DT",
+                "Monastir",
+                "50 m²",
+                "1 room",
+                "A compact studio flat in Monastir, perfect for students or short-term stays."
+        ));
+
+        List<House> bestOffers = new ArrayList<>();
+        houses.add(new House(
+                R.drawable.ic_home,
+                "Small Apartment",
+                "50000 DT",
+                "La Marsa",
+                "80 m²",
+                "2 rooms",
+                "A cozy small apartment located in La Marsa, ideal for singles or couples."
+        ));
+
+        houses.add(new House(
+                R.drawable.ic_home,
+                "Studio Flat",
+                "35000 DT",
+                "Monastir",
+                "50 m²",
+                "1 room",
+                "A compact studio flat in Monastir, perfect for students or short-term stays."
+        ));
+
+        // Setup RecyclerViews
+        HouseAdapter housesAdapter = new HouseAdapter(this, houses);
+        recyclerViewHouses.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        recyclerViewHouses.setAdapter(housesAdapter);
+
+        HouseAdapter bestOffersAdapter = new HouseAdapter(this, bestOffers);
+        recyclerViewBestOffers.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        recyclerViewBestOffers.setAdapter(bestOffersAdapter);
+
+        // View All button click
+        viewAllHouses.setOnClickListener(v ->
+                startActivity(new Intent(HomeActivity.this, AllHousesActivity.class)));
+
     }
 
     private void startBannerAutoScroll() {

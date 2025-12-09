@@ -17,6 +17,18 @@
             android:icon="@drawable/ic_home"/>
 
         <item
+            android:id="@+id/nav_offres"
+            android:iconTint="#FFF"
+            android:title="Mes Offres"
+            android:icon="@drawable/ic_multyhouses"/>
+
+        <item
+            android:id="@+id/nav_demandes"
+            android:iconTint="#FFF"
+            android:title="Les Demandes"
+            android:icon="@drawable/ic_contract"/>
+
+        <item
             android:id="@+id/nav_signout"
             android:title="Quitter"
             android:icon="@drawable/ic_signout"/>

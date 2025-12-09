@@ -8,18 +8,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Patterns;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -27,8 +21,7 @@ public class SignUpActivity extends AppCompatActivity {
     ImageView profileImage;
     TextInputEditText fullNameEd, emailEd, passwordEd, phoneEd;
 
-    FirebaseAuth mAuth;
-    FirebaseFirestore db;
+    Uri profileImageUri = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,16 +36,13 @@ public class SignUpActivity extends AppCompatActivity {
         passwordEd = findViewById(R.id.password);
         phoneEd = findViewById(R.id.tel);
 
-        mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
-
-        // Optional: select profile image
+        // Image Picker
         ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if(result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        Uri imageUri = result.getData().getData();
-                        profileImage.setImageURI(imageUri);
+                        profileImageUri = result.getData().getData();
+                        profileImage.setImageURI(profileImageUri);
                     }
                 }
         );
@@ -72,6 +62,7 @@ public class SignUpActivity extends AppCompatActivity {
         String password = passwordEd.getText().toString().trim();
         String phone = phoneEd.getText().toString().trim();
 
+        // Validation
         if(TextUtils.isEmpty(fullName)) {
             fullNameEd.setError("Veuillez entrer votre nom complet");
             return;
@@ -89,30 +80,32 @@ public class SignUpActivity extends AppCompatActivity {
             return;
         }
 
-        // Create user in Firebase Auth
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(task -> {
-                    if(task.isSuccessful()) {
-                        // Save extra info in Firestore
-                        Map<String, Object> userMap = new HashMap<>();
-                        userMap.put("fullName", fullName);
-                        userMap.put("email", email);
-                        userMap.put("phone", phone);
+        // Optional: handle profile image as string if needed
+        String profileImageString = null;
+        if(profileImageUri != null) {
+            profileImageString = profileImageUri.toString(); // save Uri as String
+        }
 
-                        db.collection("users")
-                                .document(mAuth.getCurrentUser().getUid())
-                                .set(userMap)
-                                .addOnSuccessListener(aVoid -> {
-                                    Toast.makeText(this, "Compte créé avec succès ✅", Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(SignUpActivity.this, HomeActivity.class));
-                                    finish();
-                                })
-                                .addOnFailureListener(e -> Log.e("Erreur sign up", e.getMessage(), task.getException())); //Toast.makeText(this, "Erreur: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+        // Local user object (you can later save to DB or API)
+        User newUser = new User(fullName, email, password, phone, profileImageString);
 
-                    } else {
-                        Toast.makeText(this, "Erreur: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                        Log.e("Erreur sign up", "Firebase Auth: Failed to create user", task.getException());
-                    }
-                });
+        Toast.makeText(this, "Compte créé avec succès ✅", Toast.LENGTH_SHORT).show();
+
+        // Redirect to HomeActivity
+        startActivity(new Intent(SignUpActivity.this, HomeActivity.class));
+        finish();
+    }
+
+    // Simple user class for demonstration
+    public static class User {
+        public String fullName, email, password, phone, profileImage;
+
+        public User(String fullName, String email, String password, String phone, String profileImage) {
+            this.fullName = fullName;
+            this.email = email;
+            this.password = password;
+            this.phone = phone;
+            this.profileImage = profileImage;
+        }
     }
 }

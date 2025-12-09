@@ -36,6 +36,18 @@
             android:exported="false" />
 
         <activity
+            android:name=".ProfileActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".AllHousesActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".HouseDetailsActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".SplashScreenActivity"
             android:exported="true">
             <intent-filter>

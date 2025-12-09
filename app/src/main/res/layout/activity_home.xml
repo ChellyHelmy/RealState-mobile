@@ -54,55 +54,65 @@
                     android:clipChildren="false"
                     android:overScrollMode="never"/>
 
-                <!-- Categories Label -->
-                <TextView
-                    android:id="@+id/textViewCategories"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Houses"
-                    android:textSize="18sp"
-                    android:textColor="#2E7D32"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:layout_margin="16dp"/>
-
-                <!-- Categories Recycler -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerViewCat"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:clipToPadding="false"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"/>
-
-                <!-- Popular Section -->
+                <!-- houses Label -->
+                <!-- Houses Label + View All -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="16dp">
 
                     <TextView
-                        android:id="@+id/textViewPopular"
+                        android:id="@+id/textViewHouses"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:layout_margin="16dp"
-                        android:text="Best Offers"
+                        android:text="Houses"
                         android:textColor="#2E7D32"
-                        android:fontFamily="@font/poppins_semibold"
-                        android:textSize="18sp"/>
+                        android:textSize="18sp"
+                        android:fontFamily="@font/poppins_semibold"/>
 
-
+                    <TextView
+                        android:id="@+id/textViewViewAllHouses"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="View All"
+                        android:textColor="#2E7D32"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/poppins_semibold"/>
                 </LinearLayout>
 
-                <!-- Popular Recycler -->
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerViewPopular"
+                    android:id="@+id/recyclerViewHouses"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="8dp"
+                    android:clipToPadding="false"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:orientation="horizontal"/>
+
+                <!-- Best Offers Label -->
+                <TextView
+                    android:id="@+id/textViewBestOffers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Best Offers"
+                    android:textColor="#2E7D32"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewBestOffers"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     android:clipToPadding="false"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"/>
-
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"/>
             </LinearLayout>
         </ScrollView>
 

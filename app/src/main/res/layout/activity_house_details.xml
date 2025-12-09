@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    tools:context=".HouseDetailsActivity">
+
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarHouseDetails"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#2E7D32"
+        app:title="House Details"
+        app:titleTextColor="@android:color/white"
+        app:navigationIcon="@drawable/ic_back"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Scrollable content -->
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/toolbarHouseDetails"
+        app:layout_constraintBottom_toTopOf="@id/btnReservation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- House Image -->
+            <ImageView
+                android:id="@+id/imgHouseDetails"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_home"
+                android:background="@drawable/white_bg"/>
+
+            <!-- Title -->
+            <TextView
+                android:id="@+id/txtHouseTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Villa Green"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#2E7D32"
+                android:layout_marginTop="12dp"/>
+
+            <!-- Price -->
+            <TextView
+                android:id="@+id/txtHousePrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="120000 DT"
+                android:textColor="#1B5E20"
+                android:layout_marginTop="4dp"/>
+
+            <!-- Address -->
+            <TextView
+                android:id="@+id/txtHouseAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tunis"
+                android:textColor="#1B5E20"
+                android:layout_marginTop="4dp"/>
+
+            <!-- Area -->
+            <TextView
+                android:id="@+id/txtHouseArea"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Area: 150 m²"
+                android:textColor="#1B5E20"
+                android:layout_marginTop="4dp"/>
+
+            <!-- Rooms -->
+            <TextView
+                android:id="@+id/txtHouseRooms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rooms: 3"
+                android:textColor="#1B5E20"
+                android:layout_marginTop="4dp"/>
+
+            <!-- Description -->
+            <TextView
+                android:id="@+id/txtHouseDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="This is a beautiful villa located in the heart of Tunis..."
+                android:textColor="#1B5E20"
+                android:layout_marginTop="8dp"
+                android:lineSpacingExtra="2dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Reservation Button -->
+    <Button
+        android:id="@+id/btnReservation"
+        android:layout_width="0dp"
+        android:layout_height="55dp"
+        android:layout_margin="16dp"
+        android:backgroundTint="#2E7D32"
+        android:text="Reservation"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:fontFamily="@font/poppins_semibold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
